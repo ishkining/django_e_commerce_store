@@ -7,9 +7,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
 
+    # ADMIN URL
     path('admin/', admin.site.urls),
-
+    # Store app
     path('', include('store.urls')),
+    # Cart app
+    path('cart/', include('cart.urls')),
 
 ]
 

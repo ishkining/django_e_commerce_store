@@ -77,7 +77,7 @@
 
             {% for category in all_categories%}
             <li>
-              <a class="dropdown-item" href="">
+              <a class="dropdown-item" href="{{ category.get_absolute_url }}">
                 {{ category.name|capfirst }}
               </a>
             </li>
@@ -107,7 +107,7 @@
           <a
             type="button"
             role="button"
-            href="/"
+            href="{% url 'cart-summary' %}"
             class="btn btn-outline-secondary"
           >
             <i class="fa fa-shopping-cart" aria-hidden="true"> </i>
