@@ -13,6 +13,8 @@ urlpatterns = [
     path('', include('store.urls')),
     # Cart app
     path('cart/', include('cart.urls')),
+    # Account app
+    path('account/', include('account.urls')),
 
 ]
 
