@@ -3,6 +3,8 @@ from django.shortcuts import render
 from .models import ShippingAddress, OrderItem, Order
 from cart.cart import Cart
 
+from django.http import JsonResponse
+
 
 def checkout(request):
     if request.user.is_authenticated:
@@ -40,7 +42,7 @@ def complete_order(request):
             1) Create order -> Accounts users With + Without Ship
             2) Create order -> Guest users without an account
         '''
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             order = Order.objects.create(
                 full_name=name,
                 email=email,
@@ -64,8 +66,7 @@ def complete_order(request):
                 full_name=name,
                 email=email,
                 shipping_address=shipping_address,
-                amount_paid=total_cost,
-                user=request.user
+                amount_paid=total_cost
             )
 
             order_id = order.pk
@@ -78,8 +79,16 @@ def complete_order(request):
                     price=item['price'],
                 )
 
+        order_success = True
+        response = JsonResponse({'success': order_success})
+        return response
+
 
 def payment_success(request):
+    for key in list(request.session.keys()):
+        if key == 'session_key':
+            del request.session[key]
+
     return render(request, 'payment/payment-success.html')
 
 
