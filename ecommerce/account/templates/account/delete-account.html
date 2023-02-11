@@ -1,0 +1,34 @@
+{% include 'store/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: grey;
+    }
+</style>
+
+<body>
+    <br>
+    <div class="container bg-white shadow-md p-5 form-layout">
+        <h3> Delete account!</h3>
+        <hr>
+
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+
+            <p>Are you sure?</p>
+            <button type="submit" class="btn btn-danger navbar-btn text-white">
+                &nbsp; Delete
+            </button>
+            <br><br>
+            <a class="btn btn-primary navbar-btn text-white" type="button" href="{% url 'profile-management' %}">
+                <i class="fa fa-backward" aria-hidden="true"></i> &nbsp; Go back
+            </a>
+        </form>
+    </div>
+</body>
+<br> <br>
+{% endblock %}
