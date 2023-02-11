@@ -137,6 +137,8 @@
 
     <script>
 
+    let total_price = '{{ cart.get_total }}'.split(',').join('.');
+
     // Paypal script
     const paypalButtonsComponent = paypal.Buttons({
     // optional styling for buttons
@@ -151,13 +153,45 @@
 
             document.querySelectorAll('.validate').forEach(item => {
                 item.addEventListener('keyup', event=> {
-                    let order_verified = 'Yes';
+                    let order_verified = true;
 
                     function checkInputs(){
-
+                        $(':input[required]').each(function(){
+                            if($(this).val() == ''){
+                                return order_verified = false;
+                            }
+                        });
+                        return order_verified;
                     }
-                })
-            })
+                    let isOrderVerified = checkInputs();
+
+                    if(isOrderVerified){
+                        actions.enable();
+                    }
+                    else{
+                        actions.disable();
+                    }
+
+                });
+            });
+            let order_verified = true;
+
+            function checkInputs(){
+                $(':input[required]').each(function(){
+                    if($(this).val() == ''){
+                        return order_verified = false;
+                    }
+                });
+                return order_verified;
+            }
+            let isOrderVerified = checkInputs();
+
+            if(isOrderVerified){
+                actions.enable();
+            }
+            else{
+                actions.disable();
+            }
         },
 
 
@@ -169,7 +203,7 @@
           purchase_units: [
               {
                   amount: {
-                      value: "88.44"
+                      value: total_price
                   }
               }
           ]
@@ -183,6 +217,31 @@
       const captureOrderHandler = (details) => {
           const payerName = details.payer.name.given_name;
           console.log('Transaction completed');
+
+          // Complete order
+          $.ajax({
+          type: "POST",
+          url: '{% url "complete-order" %}',
+          data: {
+                name: $('#name').val(),
+                email: $('#email').val(),
+                address1: $('#address1').val(),
+                address2: $('#address2').val(),
+                city: $('#city').val(),
+                state: $('#state').val(),
+                zipcode: $('#zipcode').val(),
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                action: "post",
+          },
+
+          success: function (json) {
+              window.location.replace("{% url 'payment-success' %}");
+          },
+
+          error: function (xhr, errmsg, err) {
+              window.location.replace("{% url 'payment-failed' %}");
+          },
+        });
       };
 
       return actions.order.capture().then(captureOrderHandler);
@@ -202,36 +261,7 @@
 
 
 
-    // Complete order
-    {#$(document).on("submit", function (e) {#}
-    {#    e.preventDefault();#}
-    {#    alert('everything');#}
-    {#    $.ajax({#}
-    {#      type: "POST",#}
-    {#      url: '{% url "complete-order" %}',#}
-    {#      data: {#}
-    {#            name: $('#name').val(),#}
-    {#            email: $('#email').val(),#}
-    {#            address1: $('#address1').val(),#}
-    {#            address2: $('#address2').val(),#}
-    {#            city: $('#city').val(),#}
-    {#            state: $('#state').val(),#}
-    {#            zipcode: $('#zipcode').val(),#}
-    {#            csrfmiddlewaretoken: "{{ csrf_token }}",#}
-    {#            action: "post",#}
-    {#      },#}
-    {##}
-    {#      success: function (json) {#}
-    {#          alert('everything fine');#}
-    {#          window.location.replace("{% url 'payment-success' %}");#}
-    {#      },#}
-    {##}
-    {#      error: function (xhr, errmsg, err) {#}
-    {#          alert('everything bad');#}
-    {#          window.location.replace("{% url 'payment-failed' %}");#}
-    {#      },#}
-    {#    });#}
-    {# }); #}
+
 
 
    </script>

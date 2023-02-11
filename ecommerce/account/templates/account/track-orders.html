@@ -1,0 +1,42 @@
+
+
+{% include 'store/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: grey;
+    }
+</style>
+
+<body>
+    <br>
+    <div class="container bg-white shadow-md p-5 form-layout">
+        <h2 class="text-center">
+            <i class="fa fa-list-alt" aria-hidden="true"></i>
+            My orders</h2>
+        <hr>
+
+    </div>
+
+    <div class="container bg-white shadow-md p-5 form-layout">
+        {% for order in orders %}
+            <strong><i class="fa fa-list-alt" aria-hidden="true"></i>
+                Order ID # {{ order.id }}</strong>
+            <br><br>
+            {{ order.product }}
+            <br><br>
+            Quantity * {{ order.quantity }}
+            <br><br>
+            ${{ order.price }}
+            <br>
+            <hr>
+        {% endfor %}
+
+    </div>
+
+</body>
+{% endblock %}
