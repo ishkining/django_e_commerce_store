@@ -1,1 +1,27 @@
-<h1>your account is not verified</h1>
+{% include 'store/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: grey;
+    }
+</style>
+
+<body>
+    <br>
+    <div class="container bg-white shadow-md p-5 form-layout">
+    <div class="text-center">
+    <div class="text-center">
+        <i class="fa fa-times fa-3x text-danger" aria-hidden="true"></i>
+        <br>
+        <h5><strong>Your account verification failed</strong></h5>
+        <hr>
+        <p>Please proceed to register</p>
+    </div>
+    </div>
+</body>
+
+{% endblock %}
