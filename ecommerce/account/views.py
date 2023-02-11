@@ -14,6 +14,11 @@ from django.contrib.auth import login, logout, authenticate
 
 from django.contrib.auth.decorators import login_required
 
+from django.contrib import messages
+
+from payment.forms import ShippingForm
+from payment.models import ShippingAddress
+
 
 def register(request):
     form = CreateUserForm()
@@ -102,6 +107,9 @@ def user_logout(request):
                 del request.session[key]
     except KeyError:
         pass
+
+    messages.success(request, 'Logout success')
+
     return redirect('store')
 
 
@@ -118,6 +126,9 @@ def profile_management(request):
 
         if user_form.is_valid():
             user_form.save()
+
+            messages.info(request, 'Account updated')
+
             return redirect('dashboard')
 
     context = {'user_form': user_form}
@@ -130,6 +141,35 @@ def delete_account(request):
 
     if request.method == 'POST':
         user.delete()
+
+        messages.error(request, 'Account deleted')
+
         return redirect('store')
 
     return render(request, 'account/delete-account.html')
+
+
+def manage_shipping(request):
+    try:
+        shipping = ShippingAddress.objects.get(user=request.user.id)
+    except ShippingAddress.DoesNotExist:
+        shipping = None
+
+    form = ShippingForm(instance=shipping)
+
+    if request.method == 'POST':
+
+        form = ShippingForm(request.POST, instance=shipping)
+
+        if form.is_valid():
+            shipping_user = form.save(commit=False)
+
+            shipping_user.user = request.user
+
+            shipping_user.save()
+
+            return redirect('dashboard')
+
+    context = {'form': form}
+
+    return render(request, 'account/manage-shipping.html', context=context)
