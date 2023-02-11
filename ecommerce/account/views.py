@@ -149,6 +149,7 @@ def delete_account(request):
     return render(request, 'account/delete-account.html')
 
 
+@login_required(login_url='my-login')
 def manage_shipping(request):
     try:
         shipping = ShippingAddress.objects.get(user=request.user.id)
