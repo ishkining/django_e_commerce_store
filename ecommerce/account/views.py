@@ -94,8 +94,14 @@ def my_login(request):
 
 
 def user_logout(request):
-    auth.logout(request)
-
+    try:
+        for key in list(request.session.keys()):
+            if key == 'session_key':
+                continue
+            else:
+                del request.session[key]
+    except KeyError:
+        pass
     return redirect('store')
 
 
@@ -106,6 +112,7 @@ def dashboard(request):
 
 @login_required(login_url='my-login')
 def profile_management(request):
+    user_form = UpdateUserForm(instance=request.user)
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
 
@@ -113,7 +120,6 @@ def profile_management(request):
             user_form.save()
             return redirect('dashboard')
 
-    user_form = UpdateUserForm(instance=request.user)
     context = {'user_form': user_form}
     return render(request, 'account/profile-management.html', context=context)
 

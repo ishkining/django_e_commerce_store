@@ -16,18 +16,28 @@
     <br>
     <div class="container bg-white shadow-md p-5 form-layout">
         <h3> Login to your account!</h3>
+        <hr>
         <br><br>
 
         <form method="post" autocomplete="off">
             {% csrf_token %}
 
             {{form.username|as_crispy_field}}
+
             <br>
             {{form.password|as_crispy_field}}
             <br>
-            <button type="submit" class="btn btn-secondary btn-lg w-100 btn-clock p-2">
-                Login
+            <button type="submit" class="btn btn-info navbar-btn text-white w-100 p-2">
+                <i class="fa fa-key" aria-hidden="true"></i>
+                &nbsp;Login
             </button>
+            <br><br>
+            {{form.non_field_errors}}
+            <div class="text-center">
+                <a href="{% url 'register' %}">Don't have an account</a>
+                <br><br>
+                <a href="{% url 'reset_password' %}">Forgotten your password?</a>
+            </div>
         </form>
     </div>
 </body>
